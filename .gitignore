@@ -154,3 +154,9 @@ debug*/
 *.gz
 
 cache/
+/yolov8_result_prob/
+/yolov8_result/
+/yolov8_datacsv_prob/
+/googlenet_imagenet1000_prob/
+/googlenet_imagenet1000_result/
+/googlenet_imagenet1000_result_prob/
