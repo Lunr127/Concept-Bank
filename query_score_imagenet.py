@@ -8,6 +8,7 @@ from collections import defaultdict
 from operator import mul
 from functools import reduce
 from lavis.models import load_model_and_preprocess
+from tqdm import tqdm
 
 # 加载 blip 模型，用以提取特征
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -100,10 +101,13 @@ if not os.path.exists(result_path):
 if not os.path.exists(result_prob_path):
     os.makedirs(result_prob_path)
 
+# 使用tqdm包装items
+progress_bar = tqdm(query_dictionary.items())
+
 # 遍历字典query_dictionary并获取键值对
-for queryId, query_topic in query_dictionary.items():
-    # 打印键和对应的值
-    print(queryId, ":", query_topic)
+for queryId, query_topic in progress_bar:
+    # 在进度条中显示当前处理的 queryId
+    progress_bar.set_description(f"Processing {queryId}")
 
     # 查询语句转化为关键词
     keywords = get_keywords_from_query(query_topic)
