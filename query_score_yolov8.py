@@ -54,7 +54,7 @@ def get_keywords_from_query(query):
 # 初始化csv_data字符串
 csv_data = ""
 
-datacsv_path = "E:/pycharmProjects/LAVIS/yolov8_datacsv_prob"
+datacsv_path = "/mnt/disk6/fsw/VBS/AVS/concept_bank/yolov8_datacsv_prob"
 
 # 遍历datacsv文件夹下的所有文件
 for file_name in os.listdir(datacsv_path):
@@ -91,8 +91,8 @@ for line in lines:
     key, value = line.strip().split('  ')
     query_dictionary[key] = value
 
-result_path = "E:/pycharmProjects/LAVIS/yolov8_result/"
-result_prob_path = "E:/pycharmProjects/LAVIS/yolov8_result_prob/"
+result_path = "/mnt/disk6/fsw/VBS/AVS/concept_bank/result/yolov8_result/"
+result_prob_path = "/mnt/disk6/fsw/VBS/AVS/concept_bank/result/yolov8_result_prob/"
 
 # 检查 result 文件夹是否存在，如果不存在则创建
 if not os.path.exists(result_path):
