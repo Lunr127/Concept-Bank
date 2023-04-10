@@ -89,8 +89,8 @@ for line in lines:
     key, value = line.strip().split('  ')
     query_dictionary[key] = value
 
-result_path = "E:/pycharmProjects/LAVIS/imagenet_result/"
-result_prob_path = "E:/pycharmProjects/LAVIS/imagenet_result_prob/"
+result_path = "E:/pycharmProjects/LAVIS/googlenet_imagenet1000_result/"
+result_prob_path = "E:/pycharmProjects/LAVIS/googlenet_imagenet1000_result_prob/"
 
 # 检查 result 文件夹是否存在，如果不存在则创建
 if not os.path.exists(result_path):
@@ -125,23 +125,25 @@ for queryId, query_topic in query_dictionary.items():
         imagenet_classes_vector_map[imagenet_class] = imagenet_class_vector[0]
 
     # 映射 keyword_vector_map 的 key 到 imagenet_classes_vector_map 的 key
-    keyword_imagenet_class_map = {}
+    keyword_imagenet_class_map = []
     for keyword, vector in keyword_vector_map.items():
-        max_similarity = -1
-        max_class = None
+        similarities = []
         # 计算余弦相似度
         for imagenet_class, imagenet_vector in imagenet_classes_vector_map.items():
             similarity = cosine_similarity(vector, imagenet_vector)
-            if similarity > max_similarity:
-                max_similarity = similarity
-                max_class = imagenet_class
-        keyword_imagenet_class_map[keyword] = max_class
+            similarities.append((similarity, imagenet_class))
+        # 取前三个最高相似度
+        similarities.sort(reverse=True)
+        top_similarities = similarities[:3]
+        # 添加对应的 imagenet_class
+        for sim, imagenet_class in top_similarities:
+            keyword_imagenet_class_map.append(imagenet_class)
 
     # 计算每个shotId的分数乘积之和
     query_scores = {}
     for shot_id, target_scores in shots.items():
         score_products = []
-        for target in keyword_imagenet_class_map.values():
+        for target in keyword_imagenet_class_map:
             target_score_sum = sum([score for t, score in target_scores if t == target])
             target_score_sum += 1  # 将每个score加1
             if target_score_sum > 2.5:
@@ -165,19 +167,19 @@ for queryId, query_topic in query_dictionary.items():
     else:
         normalized_results = [(shot_id, 1) for shot_id, score in sorted_results]
 
-        # 创建文件名为 key.txt 的文件并打开
-        queryId = "1" + queryId
+    # 创建文件名为 key.txt 的文件并打开
+    queryId = "1" + queryId
 
-        with open(result_path + queryId + '.txt', 'w', newline='') as file:
-            # 输出归一化后的结果
-            for shot_id, score in normalized_results:
-                # 写入文件中
-                if score > 0:
-                    file.write(queryId + " 0 " + shot_id + "\n")
+    with open(result_path + queryId + '.txt', 'w', newline='') as file:
+        # 输出归一化后的结果
+        for shot_id, score in normalized_results:
+            # 写入文件中
+            if score > 0:
+                file.write(queryId + " 0 " + shot_id + "\n")
 
-        with open(result_prob_path + queryId + '.txt', 'w', newline='') as file:
-            # 输出归一化后的结果
-            for shot_id, score in normalized_results:
-                # 写入文件中
-                if score > 0:
-                    file.write(queryId + " 0 " + shot_id + " " + str(score) + "\n")
+    with open(result_prob_path + queryId + '.txt', 'w', newline='') as file:
+        # 输出归一化后的结果
+        for shot_id, score in normalized_results:
+            # 写入文件中
+            if score > 0:
+                file.write(queryId + " 0 " + shot_id + " " + str(score) + "\n")

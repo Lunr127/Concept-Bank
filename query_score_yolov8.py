@@ -127,18 +127,6 @@ for queryId, query_topic in query_dictionary.items():
         coco_classes_vector_map[coco_class] = coco_class_vector[0]
 
     # 映射 keyword_vector_map 的 key 到 coco_classes_vector_map 的 key
-    # keyword_coco_class_map = {}
-    # for keyword, vector in keyword_vector_map.items():
-    #     max_similarity = -1
-    #     max_class = None
-    #     # 计算余弦相似度
-    #     for coco_class, coco_vector in coco_classes_vector_map.items():
-    #         similarity = cosine_similarity(vector, coco_vector)
-    #         if similarity > max_similarity:
-    #             max_similarity = similarity
-    #             max_class = coco_class
-    #     keyword_coco_class_map[keyword] = max_class
-
     keyword_coco_class_map = []
     for keyword, vector in keyword_vector_map.items():
         similarities = []
@@ -157,7 +145,6 @@ for queryId, query_topic in query_dictionary.items():
     query_scores = {}
     for shot_id, target_scores in shots.items():
         score_products = []
-        # for target in keyword_coco_class_map.values():
         for target in keyword_coco_class_map:
             target_score_sum = sum([score for t, score in target_scores if t == target])
             target_score_sum += 1  # 将每个score加1
